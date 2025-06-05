@@ -1,4 +1,4 @@
-![Preview](https://imgur.com/a/M4s0yTd)
+![Preview](https://i.imgur.com/eJuwtjS.png)
 
 # Crosshair
 

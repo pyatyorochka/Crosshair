@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- Тип выходного файла: Windows-приложение -->
+		<OutputType>WinExe</OutputType>
+		<!-- Целевая платформа: .NET 6.0 с поддержкой Windows API -->
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<!-- Включаем WPF -->
+		<UseWPF>true</UseWPF>
+		<!-- Включаем nullable-аннотации (опция по желанию) -->
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Поскольку в коде используется ColorDialog из System.Windows.Forms -->
+		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WindowsForms" />
+	</ItemGroup>
+</Project>

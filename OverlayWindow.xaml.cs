@@ -25,18 +25,15 @@ namespace CrosshairOverlayApp
 
         private void OverlayWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Делаем окно «сквозным» для кликов и прозрачным
             var hwnd = new WindowInteropHelper(this).Handle;
             int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
             SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | WS_EX_TRANSPARENT | WS_EX_LAYERED);
 
-            // Разворачиваем окно на весь экран
             Width = SystemParameters.PrimaryScreenWidth;
             Height = SystemParameters.PrimaryScreenHeight;
             Left = 0;
             Top = 0;
 
-            // Первый запуск отрисовки прицела и анимации
             DrawCrosshair();
             AnimateOpacity();
         }
@@ -59,34 +56,31 @@ namespace CrosshairOverlayApp
             double centerY = Height / 2;
             SolidColorBrush brush = new SolidColorBrush(color) { Opacity = opacityValue };
 
-            // Вертикальная линия сверху
-            var line1 = new Line
-            {
-                X1 = centerX,
-                Y1 = centerY - gap - length,
-                X2 = centerX,
-                Y2 = centerY - gap,
-                Stroke = brush,
-                StrokeThickness = thickness
-            };
-            OverlayCanvas.Children.Add(line1);
-
-            // Вертикальная линия снизу (только если это не T-образный прицел)
             if (!isTShape)
             {
-                var line2 = new Line
+                var line1 = new Line
                 {
                     X1 = centerX,
-                    Y1 = centerY + gap,
+                    Y1 = centerY - gap - length,
                     X2 = centerX,
-                    Y2 = centerY + gap + length,
+                    Y2 = centerY - gap,
                     Stroke = brush,
                     StrokeThickness = thickness
                 };
-                OverlayCanvas.Children.Add(line2);
+                OverlayCanvas.Children.Add(line1);
             }
+            
+            var line2 = new Line
+            {
+                X1 = centerX,
+                Y1 = centerY + gap,
+                X2 = centerX,
+                Y2 = centerY + gap + length,
+                Stroke = brush,
+                StrokeThickness = thickness
+            };
+            OverlayCanvas.Children.Add(line2);
 
-            // Горизонтальная линия слева
             var line3 = new Line
             {
                 X1 = centerX - gap - length,
@@ -98,8 +92,6 @@ namespace CrosshairOverlayApp
             };
             OverlayCanvas.Children.Add(line3);
 
-            // Горизонтальная линия справа
-            // Заменили "#" на "//" — иначе C# думает, что это директива препроцессора
             var line4 = new Line
             {
                 X1 = centerX + gap,

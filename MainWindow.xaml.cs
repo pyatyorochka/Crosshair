@@ -11,7 +11,6 @@ namespace CrosshairOverlayApp
         private System.Drawing.Color selectedColor = System.Drawing.Color.White;
         private OverlayWindow overlayWindow;
 
-        // DependencyProperty для биндинга превью-цвета
         public SolidColorBrush SelectedColorBrush
         {
             get { return (SolidColorBrush)GetValue(SelectedColorBrushProperty); }
@@ -29,13 +28,11 @@ namespace CrosshairOverlayApp
         public MainWindow()
         {
             InitializeComponent();
-
-            // Инициализируем превью-цвет (белый по умолчанию)
+            DataContext = this;
             SelectedColorBrush = new SolidColorBrush(
                 Color.FromRgb(selectedColor.R, selectedColor.G, selectedColor.B)
             );
 
-            // Обновление текстовых полей значениями из слайдеров
             LengthSlider.ValueChanged += (s, e) =>
             {
                 LengthValue.Text = ((int)LengthSlider.Value).ToString();
@@ -53,32 +50,39 @@ namespace CrosshairOverlayApp
                 OpacityValue.Text = OpacitySlider.Value.ToString("0.0");
             };
 
-            // Обработчик кнопки выбора цвета
             ColorButton.Click += ColorButton_Click;
 
-            // Кнопки Apply / Exit
             ApplyButton.Click += ApplyButton_Click;
             ExitButton.Click += (s, e) => { this.Close(); };
 
-            // Запуск оверлея
             overlayWindow = new OverlayWindow();
             overlayWindow.Show();
         }
 
         private void ColorButton_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new ColorDialog
+            // Преобразуем текущий selectedColor (System.Drawing.Color) в WPF Color
+            var initialWpfColor = Color.FromRgb(selectedColor.R, selectedColor.G, selectedColor.B);
+
+            // Создаём наш WPF-градентный диалог
+            var picker = new ColorPickerGradientWindow(initialWpfColor)
             {
-                Color = selectedColor
+                Owner = this
             };
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            bool? result = picker.ShowDialog();
+            if (result == true)
             {
-                selectedColor = dlg.Color;
-                SelectedColorBrush = new SolidColorBrush(
-                    Color.FromRgb(selectedColor.R, selectedColor.G, selectedColor.B)
-                );
+                // Переключаемся из WPF Color в System.Drawing.Color
+                var wpfC = picker.SelectedColor.Value;
+                selectedColor = System.Drawing.Color.FromArgb(wpfC.R, wpfC.G, wpfC.B);
+
+                // Обновляем превью-границу
+                SelectedColorBrush = new SolidColorBrush(wpfC);
             }
         }
+
+
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {

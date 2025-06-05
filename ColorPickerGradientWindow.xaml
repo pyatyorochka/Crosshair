@@ -1,0 +1,111 @@
+﻿<Window x:Class="CrosshairOverlayApp.ColorPickerGradientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Select Color"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Width="380" Height="360"
+        Background="{DynamicResource PrimaryBackground}"
+        Foreground="{DynamicResource ForegroundColor}">
+
+	<Window.Resources>
+		<SolidColorBrush x:Key="PrimaryBackground" Color="#2E2E2E" />
+		<SolidColorBrush x:Key="SecondaryBackground" Color="#3C3C3C" />
+		<SolidColorBrush x:Key="AccentColor" Color="#007ACC" />
+		<SolidColorBrush x:Key="AccentHoverColor" Color="#3399FF" />
+		<SolidColorBrush x:Key="ForegroundColor" Color="#FFFFFF" />
+
+		<Style TargetType="Button" x:Key="DarkButton">
+			<Setter Property="Background" Value="{StaticResource SecondaryBackground}" />
+			<Setter Property="Foreground" Value="{StaticResource ForegroundColor}" />
+			<Setter Property="Padding" Value="6,3" />
+			<Setter Property="Margin" Value="5" />
+			<Setter Property="Cursor" Value="Hand" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="BorderBrush" Value="Transparent" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border x:Name="border"
+								Background="{TemplateBinding Background}"
+								CornerRadius="4"
+								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderThickness="{TemplateBinding BorderThickness}"
+								SnapsToDevicePixels="True">
+							<ContentPresenter HorizontalAlignment="Center"
+											  VerticalAlignment="Center"
+											  Margin="{TemplateBinding Padding}" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<Setter TargetName="border"
+										Property="Background"
+										Value="{StaticResource AccentColor}" />
+								<Setter TargetName="border"
+										Property="BorderBrush"
+										Value="{StaticResource AccentHoverColor}" />
+								<Setter Property="Foreground"
+										Value="{StaticResource PrimaryBackground}" />
+							</Trigger>
+							<Trigger Property="IsPressed" Value="True">
+								<Setter TargetName="border"
+										Property="RenderTransform">
+									<Setter.Value>
+										<ScaleTransform ScaleX="0.97" ScaleY="0.97" />
+									</Setter.Value>
+								</Setter>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Window.Resources>
+
+	<Grid Margin="10">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<TextBlock Grid.Row="0"
+				   Text="Click anywhere on spectrum to pick a color"
+				   FontSize="14"
+				   FontWeight="Bold"
+				   Margin="0,0,0,8"
+				   Foreground="{DynamicResource ForegroundColor}" />
+
+		<Image x:Name="GradientImage"
+			   Grid.Row="1"
+			   Width="360" Height="256"
+			   Stretch="Fill"
+			   MouseDown="GradientImage_MouseDown"
+			   MouseMove="GradientImage_MouseMove"
+			   ToolTip="Click or drag to select color" />
+
+		<StackPanel Grid.Row="2"
+					Orientation="Horizontal"
+					HorizontalAlignment="Right"
+					Margin="0,8,0,0">
+			<Border x:Name="ColorPreview"
+					Width="30" Height="30"
+					Margin="0,0,10,0"
+					BorderBrush="{DynamicResource AccentColor}"
+					BorderThickness="1"
+					Background="{DynamicResource PrimaryBackground}" />
+			<Button x:Name="ApplyButton"
+					Content="Apply"
+					Width="80"
+					Style="{StaticResource DarkButton}"
+					IsEnabled="False"
+					Click="ApplyButton_Click" />
+			<Button x:Name="CancelButton"
+					Content="Cancel"
+					Width="80"
+					Style="{StaticResource DarkButton}"
+					Click="CancelButton_Click" />
+		</StackPanel>
+	</Grid>
+</Window>
